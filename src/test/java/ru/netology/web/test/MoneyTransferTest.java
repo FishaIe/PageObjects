@@ -11,18 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MoneyTransferTest {
 
     @Test
-    void shouldTransferMoneyBetweenOwnCardsV1() {
-      open("http://localhost:9999");
-      var loginPage = new LoginPageV1();
-//    var loginPage = open("http://localhost:9999", LoginPageV1.class);
-      var authInfo = DataHelper.getAuthInfo();
-      var verificationPage = loginPage.validLogin(authInfo);
-      var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-      verificationPage.validVerify(verificationCode);
-    }
-
-    @Test
-    void shouldTransferFromSecondToFirstCard() {
+    void shouldReplenishmentFromSecondToFirstCard() {
         val sum = 500;
         open("http://localhost:9999");
         val loginPage = new LoginPageV1();
@@ -46,7 +35,7 @@ class MoneyTransferTest {
     }
 
     @Test
-    void shouldTransferFromFirstToSecondCard() {
+    void shouldReplenishmentFromFirstToSecondCard() {
         val sum = 500;
         open("http://localhost:9999");
         val loginPage = new LoginPageV1();
@@ -70,7 +59,7 @@ class MoneyTransferTest {
     }
 
     @Test
-    void shouldTransferFromInvalidCard() {
+    void shouldReplenishmentFromInvalidCard() {
         val amount = 1000;
         open("http://localhost:9999");
         val loginPage = new LoginPageV1();
@@ -83,6 +72,40 @@ class MoneyTransferTest {
         transferPage.headingCardsPayment();
         transferPage.setCardNumber(DataHelper.getAnotherCard(), amount);
         transferPage.invalidPayCard();
+    }
+
+    @Test
+    void shouldReplenishmentOverLimitFromFirstCard() {
+        val amount = 50000;
+        open("http://localhost:9999");
+        val loginPage = new LoginPageV1();
+        val authInfo = DataHelper.getAuthInfo();
+        val verificationPage = loginPage.validLogin(authInfo);
+        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+        val dashboardPage = verificationPage.validVerify(verificationCode);
+        dashboardPage.profilePage();
+        val initialBalanceFromCard = dashboardPage.getSecondCardBalance();
+        val transferPage = dashboardPage.replenishmentV1();
+        transferPage.headingCardsPayment();
+        transferPage.setCardNumber(DataHelper.getSecondCard(), amount);
+        transferPage.validPayExtendAmount();
+    }
+
+    @Test
+    void shouldReplenishmentOverLimitFromSecondCard() {
+        val amount = 50000;
+        open("http://localhost:9999");
+        val loginPage = new LoginPageV1();
+        val authInfo = DataHelper.getAuthInfo();
+        val verificationPage = loginPage.validLogin(authInfo);
+        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+        val dashboardPage = verificationPage.validVerify(verificationCode);
+        dashboardPage.profilePage();
+        val initialBalanceFromCard = dashboardPage.getFirstCardBalance();
+        val transferPage = dashboardPage.replenishmentV1();
+        transferPage.headingCardsPayment();
+        transferPage.setCardNumber(DataHelper.getFirstCard(), amount);
+        transferPage.validPayExtendAmount();
     }
 
 }
