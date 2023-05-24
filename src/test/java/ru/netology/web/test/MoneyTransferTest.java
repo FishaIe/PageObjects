@@ -60,7 +60,7 @@ class MoneyTransferTest {
 
     @Test
     void shouldReplenishmentFromInvalidCard() {
-        val amount = 1000;
+        val sum = 1000;
         open("http://localhost:9999");
         val loginPage = new LoginPageV1();
         val authInfo = DataHelper.getAuthInfo();
@@ -70,13 +70,13 @@ class MoneyTransferTest {
         dashboardPage.profilePage();
         val transferPage = dashboardPage.replenishmentV1();
         transferPage.headingCardsPayment();
-        transferPage.setCardNumber(DataHelper.getAnotherCard(), amount);
+        transferPage.setCardNumber(DataHelper.getAnotherCard(), sum);
         transferPage.invalidPayCard();
     }
 
     @Test
     void shouldReplenishmentOverLimitFromFirstCard() {
-        val amount = 50000;
+        val sum = 50000;
         open("http://localhost:9999");
         val loginPage = new LoginPageV1();
         val authInfo = DataHelper.getAuthInfo();
@@ -87,13 +87,13 @@ class MoneyTransferTest {
         val initialBalanceFromCard = dashboardPage.getSecondCardBalance();
         val transferPage = dashboardPage.replenishmentV1();
         transferPage.headingCardsPayment();
-        transferPage.setCardNumber(DataHelper.getSecondCard(), amount);
+        transferPage.setCardNumber(DataHelper.getSecondCard(), sum);
         transferPage.validPayExtendAmount();
     }
 
     @Test
     void shouldReplenishmentOverLimitFromSecondCard() {
-        val amount = 50000;
+        val sum = 50000;
         open("http://localhost:9999");
         val loginPage = new LoginPageV1();
         val authInfo = DataHelper.getAuthInfo();
@@ -104,7 +104,7 @@ class MoneyTransferTest {
         val initialBalanceFromCard = dashboardPage.getFirstCardBalance();
         val transferPage = dashboardPage.replenishmentV1();
         transferPage.headingCardsPayment();
-        transferPage.setCardNumber(DataHelper.getFirstCard(), amount);
+        transferPage.setCardNumber(DataHelper.getFirstCard(), sum);
         transferPage.validPayExtendAmount();
     }
 
